@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content1 %}
+<style>
+    table{
+        margin:0 auto;
+        border:1px solid #0000ff;
+        width:500px;
+        height:430px;
+        border-collapse:collapse;
+        margin-top:2px;
+        text-align:center;
+        background-color:fefefe;
+    }
+    tr{
+        border:1px solid #000000;
+        height:35px;
+    }
+    td{
+        border:1px solid #000000
+        padding:1px;
+    }
+
+    #div_solar_form{
+        width:150px;
+        height:25px;
+        margin:10px;
+        background-color:#f0f0f0;
+    }
+    #div_solar_content{
+        display:flex;
+        flex-grow:1;
+        //width:100%;
+        flex-direction:row;
+        //background-color:#ffff00;
+        align-items:center;
+        margin-bottom:10px;
+    }
+</style>
+<div id="div_solar_form">
+    <form action="/solar/" method="post" id="solar_form">
+        {% csrf_token %}
+        <label>西元年</label>
+        <select name="year" onchange="form_submit()">
+            {% for year in year_list %}
+                {%if year_now == year %}
+                    <option value="{{ year }}" selected>{{ year }}</option>
+                {% else %}
+                    <option value="{{ year }}">{{ year }}</option>
+                {%endif %}
+            {% endfor %}
+        </select>
+    </form>
+</div>
+<div id="div_solar_content">
+    {{html}}
+    <div>
+        <img src="https://image.woshipm.com/wp-files/2021/07/Jczdkfy7zAWIN9FKxCMi.gif" style="padding-top:2px;width:430px;height:430px;"/>
+    </div>
+</div>
+<script>
+    function form_submit(){
+        document.getElementById("solar_form").submit();
+    }
+</script>
+{% endblock %}

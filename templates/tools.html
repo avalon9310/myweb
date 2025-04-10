@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content1 %}
+
+<style>
+    table {
+        border: 1px solid #0000ff;
+        border-collapse: collapse;
+        margin-top: 50px;
+        width: 800px;
+        text-align: center;
+        background-color: #fefefe;
+    }
+    tr {
+        height:40px;
+        border: 1px solid #000000;
+    }
+    td {
+        width:33%;
+        border: 1px solid #000000;
+    }
+    a{
+        text-decoration: none
+    }
+</style>
+
+<table>
+    <tr style="background-color=#a0f0f0">
+        <td colspan="3">常用工具下載</td>
+    </tr>
+    <tr>
+        <td>
+            <a href="http://localhost:7000/download/python-apt.tar.xz">
+                python-apt
+            </a>
+        </td>
+        <td>
+            <a href="http://localhost:7000/download/phpMyAdmin-5.2.1-all-languages.zip">
+                phpMyAdmin-5.2.1
+            </a>
+        </td>
+        <td>
+            <a href="http://localhost:7000/download/Armoury_Crate.zip">
+                Armoury_Crate_Uninstall_Tool
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>第一格</td>
+        <td>第二格</td>
+        <td>第三格</td>
+    </tr>
+</table>
+
+{% endblock %}

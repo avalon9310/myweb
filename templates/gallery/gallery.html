@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% block content1 %}
+<style>
+    ul{
+        list-style-type:none;
+        padding-left:20px;
+    }
+    a{
+        text-decoration:none;
+    }
+    #gallery_master{
+        display:flex;
+        flex-direction:row;
+        width:100%;
+        height:100%;
+    }
+    #gallery_list{
+        background-color:#ffff00;
+        width:250px;
+        overflow:auto;
+    }
+    #gallery_thumb{
+        display:flex;
+        flex-direction:column;
+        background-color:#00ff00;
+        flex-grow:1;
+        width:100%;
+        overflow:auto;
+    }
+    .img_thumb{
+        position:relative;
+        top:0px;
+        width:100%;
+        text-align:center;
+		top:50%;
+		left:50%;
+		transform:translate(-50%, -50%);
+    }
+    .with_img{
+        width:20%;
+        border:1px solid;
+        border-color:#000000;
+        margin:1px;
+    }
+    .without_img{
+        width:20%;
+        border:0px solid;
+        border-color:#000000;
+        margin:1px;
+    }
+    #gallery_primitive{
+        visibility:hidden;
+        position:absolute;
+        width:100%;
+        height:100%;
+        background-color:#f0f0f0;
+        z-index:1;
+        top:0px
+    }
+    #btn_close{
+        position:absolute;
+        top:50px;
+        right:20px;
+        z-index:2;
+    }
+    #show_primitive{
+        background-color:#a0a0ff;
+        height:100%;
+        overflow:auto;
+    }
+    #img_big{
+        width:auto;
+        height:100%;
+        margin:auto;
+        display:block;
+        cursor:zoom-in;
+    }
+    #photo_style{
+        position:absolute;
+        background-color:#0000ff;
+        top:10px;
+        right:5px;
+        opacity:0.6;
+        font-size:18px;
+        color:#ffffff;
+    }
+</style>
+<div id="gallery_master">
+    <div id="gallery_primitive">
+        <div id="photo_style">
+            <input id="rd_primitive" type="radio" name="rtoggle" checked="checked" onclick="showPrimitive(-1);">
+<!--            <label for="rd_primitive">原圖</label>-->
+
+        </div>
+
+        <a href="javascript:void(0)" id="btn_close" onclick="close_primitive();">
+            <img src="/static/images/exit.jpg" width="84" height="32"/>
+        </a>
+        <div id="show_primitive">
+        </div>
+    </div>
+    <div id="gallery_list">
+        {{list_dir}}
+    </div>
+    <div id="gallery_thumb">
+    </div>
+</div>
+<script>
+    //偵測是否使用手機版本
+    //設計手機版本的最好工具為 bootstrap, 需先了解 css, javascript ，再研讀 bootstrap
+    isMobile = window.matchMedia("(any-pointer:coarse)").matches;
+
+
+    target=0;
+    loadThumb("");
+    show_primitive=document.getElementById("show_primitive");
+    show_primitive.onmousewheel=mouseWheelEvent;
+    //滑鼠點一下
+    show_primitive.addEventListener("click",function(e){
+        zoomin = !zoomin;
+        img_big = document.getElementById("img_big");
+        if (zoomin){
+            img_big.style.width="100%";
+            img_big.style.height="auto";
+            img_big.style.cursor="zoom-out";
+            show_primitive.onmousewheel=e.preventDefault;
+        }
+        else{
+            img_big.style.width="auto";
+            img_big.style.height="100%";
+            img_big.style.cursor="zoom-in";
+            show_primitive.onmousewheel=mouseWheelEvent;
+        }
+    });
+
+    //當螢幕旋轉時，觸發變更圖片大小
+    window.addEventListener(
+        "orientationchange",
+        function(){
+            setMobilSize();
+        },
+        false
+    );
+
+    //偵測螢幕是否滑動
+    show_primitive.addEventListener("touchstart", touchstart);
+    show_primitive.addEventListener("touchend",touchend);
+    function touchstart(e){
+        //放大時，不可左右滑。正常圖時才可左右滑
+        if (e.cancleable){
+            if (!e.defaultPrevented){
+                e.preventDefault();
+            }
+        }
+        var touch=e.changedTouches[0];
+        startX = touch.pageX;
+        //startY = touch.pageY;
+    }
+    function touchend(e){
+        //mode=Math.abs(window.orientation)==90?"landscape":"portrait";
+        if (e.cancleable){
+            if (!e.defaultPrevented){
+                e.preventDefault();
+            }
+        }
+        var touch = e.changedTouches[0];
+        endX = touch.pageX;
+        //endY = touch.pageY;
+        diffX = endX-startX;
+        if (diffX <-40){//左滑
+            if (target<fileArray.length-1){
+                showPrimitive(++target);
+                setMobilSize();
+            }
+        }
+        else if(diffX>40){//右滑
+            if (target>0){
+                showPrimitive(--target);
+                setMobilSize();
+            }
+        }
+    }
+
+
+
+    function setMobilSize(){
+        img_big=document.getElementById("img_big");
+        if (window.orientation ==0 || window.orientation == 180){//直向
+            img_big.style.width="100%";
+            img_big.style.height="auto";
+        }
+        else{//橫向
+            img_big.sytle.height="100%";
+            img_big.style.width="auto";
+        }
+    }
+
+    function mouseWheelEvent(event){
+        event = event || window.event;
+        if (event.wheelDelta <=-120){
+            if (target<fileArray.length-1){
+                showPrimitive(++target);
+            }
+        }
+        else if (event.wheelDelta>=120){
+            if (target >0){
+                showPrimitive(--target);
+            }
+        }
+    }
+    function showPrimitive(index){
+        if(index!=-1)target=index;
+        zoomin=false;
+        document.getElementById("gallery_primitive").style.visibility="visible";
+
+        rd1=document.getElementById("rd_primitive");
+        rd2=document.getElementById("rd_v8n");
+        rd3=document.getElementById("rd_v8x");
+        if(rd1.checked == true){
+            document.getElementById("show_primitive").innerHTML=
+            `<img id="img_big" src="/pictures/primitive/${fileArray[target]}"/>`;
+        }
+        else{
+            if (rd2.checked == true)ai_type=1;
+            else ai_type=2;
+            //alert(ai_type);
+            url="/gallery/ai_detect?photo=" + fileArray[target]+"&ai_type="+ai_type;
+            conn_ai=connector(url);
+            conn_ai.onreadystatechange=function(){
+                if(conn_ai.readyState==4 && conn_ai.status==200){
+                    photo_base64=conn_ai.responseText;
+                    //傳回的圖片是 base64格式，也就是八位元比如50，轉成一個字元
+                    //此作法，伺服器偵測好後，直接傳給使用者，不儲存到硬碟，所以效能很快
+                    show_primitive.innerHTML=
+                    `<img id='img_big' src="data:image/jpeg;base64,${photo_base64}"/>`;
+
+                    //一般人會教的方式如下
+                    //<img id='img_big' src="/pictures/xxx/deteck_ok.jpg">
+                    //如果二個人或以上連線，同時看不同圖片，會以最後一個人的連線為主
+                    //上面的照法，會將偵測的圖片，儲到硬碟的 detect_ok.jpg, 造成效能低落
+                }
+            }
+            conn_ai.send();
+        }
+        //launchFullScreen(document.documentElement);
+    }
+
+
+    function loadThumb(parent_dir){
+        url="/gallery/listThumbDir?dir=" + parent_dir;
+        conn_thumb=connector(url);
+        conn_thumb.onreadystatechange=function(){
+            if(conn_thumb.readyState==4 & conn_thumb.status == 200){
+                list=JSON.parse(conn_thumb.responseText);
+                document.getElementById("gallery_thumb").innerHTML=list["url"];
+                fileArray=list["files"].split(",");
+            }
+        };
+        conn_thumb.send();
+    }
+
+    function close_primitive(){
+        document.getElementById("gallery_primitive").style.visibility="hidden";
+        exitFullScreen();
+    }
+
+    function launchFullScreen(element){
+        if(element.requestFullscreen) {
+            element.requestFullscreen();
+        }
+        else if(element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        }
+        else if(element.msRequestFullscreen){
+            element.msRequestFullscreen();
+        }
+        else if(element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        }
+    }
+    function exitFullScreen(){
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        }
+        else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+</script>
+{% endblock %}

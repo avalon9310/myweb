@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content1 %}
+<style>
+    #div_thumb{
+        background-color:#ffff00;
+        margin-top:20px;
+        width:250px;
+        height:100px;
+        text-align:center;
+    }
+</style>
+<div id="div_thumb">
+    <p id="p_doing" style="font-size:20px;font-style:italic;">請按確定開始製作縮圖</p>
+    <p>
+        <button id="btn" onclick="btn_click();">開始製作</button>
+    </p>
+</div>
+<script>
+    function btn_click(){
+        document.getElementById("p_doing").innerText="製作縮圖中, 請勿離開...";
+        document.getElementById("btn").style.visibility="hidden";
+        document.location.href="/gallery/thumb_doing";
+    }
+</script>
+{% endblock %}

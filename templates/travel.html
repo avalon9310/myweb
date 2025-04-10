@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content1 %}
+<style>
+    table{
+        border: 1px solid #0000ff;
+        border-collapse:collapse;
+        margin-top:10px;
+    }
+    tr{
+        border:1px solid #000000;
+    }
+    td{
+        border:1px solid #000000;
+        padding:1px;
+    }
+    a{
+        text-decoration:none;
+    }
+
+    #travel_master{
+        width:100%;
+        height:100%;
+        display:flex;
+    }
+    #travel_left{
+        display:flex;
+        flex-direction:column;
+        width:200px;
+        height:100%;
+        background-color:#f0f0ff;
+    }
+    #travel_right{
+        flex-grow:1;
+        background-color: #f0f000;
+    }
+    #mapMenu{
+        border-width:1px;
+        border-style:solid;
+        border-color:#808080;
+        width:100%;
+        height:100%;
+        background-color: #e0e0ff;
+        overflow:auot;
+    }
+</style>
+<div id="travel_master">
+    <div id="travel_left">
+        <div style="width:100%;display:flex;">
+            <div style="width:33%;text-align:center">
+                <img src="/static/images/icon1.png" style="width:15px;height:30px;"/>
+            </div>
+            <div style="width:33%;text-align:center">
+                <img src="/static/images/icon2.png" style="width:15px;height:30px;"/>
+            </div>
+            <div style="width:33%;text-align:center">
+                <img src="/static/images/icon3.png" style="width:15px;height:30px;"/>
+            </div>                        
+        </div>
+        <div style="width:100%;display:flex;">
+            <div style="width:33%;text-align:center">
+                風景
+            </div>
+            <div style="width:33%;text-align:center">
+                人物
+            </div>
+            <div style="width:33%;text-align:center">
+                其它
+            </div>                        
+        </div>
+        <div style="width:100%;display:flex;background-color:#c0c0ff;">
+            <div style="padding-left:5px;">
+                日期
+            </div>
+            <div style="padding-left:5px;">
+                <input id="mapMonth" name="mapMonth", type="month" value="{{currentMonth}}" onchange="loacMenu();" style="height:25px;"/>
+            </div>
+        </div>
+        <div id="mapMenu"></div>
+    </div>
+    <div id="travel_right">
+
+        
+    </div>
+</div>
+{% endblock %}
